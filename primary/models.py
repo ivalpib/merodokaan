@@ -1,4 +1,6 @@
+from datetime import timezone
 from django.db import models
+from django.contrib.auth.models import User
 
 # Create your models here.
 class Category(models.Model):
@@ -36,12 +38,19 @@ class ProductInventory(models.Model):
     product_id = models.ForeignKey(Product,on_delete=models.CASCADE)
     quantity = models.PositiveIntegerField()
     last_updated = models.DateTimeField(auto_now=True)
+    expiry_date = models.DateField()
 
 class SalesOrder(models.Model):
-    ...
+    customer_id = models.ForeignKey(User, on_delete=models.CASCADE, default=1)
+    status = models.CharField(max_length=15)
+    total_amt = models.DecimalField(max_digits=12, decimal_places=2)
+    order_date = models.DateTimeField(auto_now_add=True)
+    delivery_date = models.DateTimeField(auto_now_add=True)
 
 class SalesOrderItems(models.Model):
-    ...
-
+    sales_order = models.ForeignKey(SalesOrder, on_delete=models.CASCADE)
+    product_id = models.ForeignKey(Product, on_delete=models.CASCADE)
+    quantity = models.PositiveIntegerField()
+    unit_price = models.DecimalField(max_digits=12, decimal_places=2)
 
 
