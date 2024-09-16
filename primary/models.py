@@ -5,6 +5,8 @@ from django.contrib.auth.models import User
 # Create your models here.
 class Category(models.Model):
     cat_name = models.CharField(max_length=30)
+    def __str__(self):
+        return(self.cat_name)
 
 class Supplier(models.Model):
     supplier_name = models.CharField(max_length=50)
@@ -20,6 +22,8 @@ class Product(models.Model):
     product_description = models.CharField(max_length=200)
     cat_id = models.ForeignKey(Category, on_delete=models.CASCADE)
     product_price = models.DecimalField(max_digits=12, decimal_places=2)
+    def __str__(self):
+        return(self.product_name)
 
 class PurchaseOrder(models.Model):
     supplier_id = models.ForeignKey(Supplier, on_delete=models.CASCADE)
