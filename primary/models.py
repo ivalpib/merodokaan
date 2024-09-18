@@ -20,7 +20,7 @@ class Product(models.Model):
     sku = models.CharField(max_length=15)
     product_name = models.CharField(max_length=50)
     product_description = models.CharField(max_length=200)
-    cat_id = models.ForeignKey(Category, on_delete=models.CASCADE)
+    cat_id = models.ForeignKey(Category,related_name='product_category', on_delete=models.CASCADE)
     product_price = models.DecimalField(max_digits=12, decimal_places=2)
     def __str__(self):
         return(self.product_name)
