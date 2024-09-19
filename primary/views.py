@@ -19,7 +19,6 @@ def LoginView(request):
        user = authenticate(request, username=username, password=password)
        if user is not None:
            login(request, user)
-           return redirect('index')
        else:
             # Handle authentication failure
             return render(request, 'login.html', {'error': 'Invalid username or password'})

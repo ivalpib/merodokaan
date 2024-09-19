@@ -3,14 +3,14 @@ from primary.models import Category, Product
 
 
 
-class CategorySerializer(serializers.ModelSerializer):
+class CategorySerializer(serializers.HyperlinkedModelSerializer):
     # product = ProductSerializer(many = True, read_only = True, source = 'product_category')
     class Meta:
         model = Category
-        fields = ['cat_name']
+        fields = '__all__'
 
 
-class ProductSerializer(serializers.ModelSerializer):
+class ProductSerializer(serializers.HyperlinkedModelSerializer):
     cat_id = CategorySerializer(read_only = True)
     class Meta:
         model = Product
