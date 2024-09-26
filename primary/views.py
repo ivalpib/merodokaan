@@ -1,3 +1,4 @@
+from urllib import response
 from django.http import HttpResponse
 from django.shortcuts import render, redirect
 from django.contrib.auth import authenticate, login, logout 
@@ -7,6 +8,7 @@ from django.contrib import messages
 from rest_framework import viewsets
 from .models import Product, Category
 from .serializers import ProductSerializer, CategorySerializer
+from rest_framework.response import Response
 
 # Create your views here.
 def HomeView(request):
@@ -52,7 +54,18 @@ def RegistrationView(request):
 class CategoryTestView(viewsets.ModelViewSet):
     queryset = Category.objects.all()
     serializer_class = CategorySerializer
+    def retrieve(self, request, *args, **kwargs):
+        instance = self.get_object()
+        products = instance.product_category.all()
+        category_data = self.get_serializer(instance, context = {'request':request}).data
+        products_data = ProductSerializer(products, many=True, context={'request': request}).data
+
+        return Response({
+            'category': category_data,
+            'products': products_data
+        })
 
 class ProductTestView(viewsets.ModelViewSet):
     queryset = Product.objects.all()
     serializer_class = ProductSerializer
+

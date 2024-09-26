@@ -6,7 +6,7 @@ from django.contrib.auth.models import User
 class Category(models.Model):
     category_name = models.CharField(max_length=30)
     def __str__(self):
-        return(self.cat_name)
+        return(self.category_name)
 
 class Supplier(models.Model):
     supplier_name = models.CharField(max_length=50)
@@ -20,10 +20,10 @@ class Product(models.Model):
     sku = models.CharField(max_length=15)
     product_name = models.CharField(max_length=50)
     product_description = models.CharField(max_length=200)
-    category_id = models.ForeignKey(Category,related_name='product_category', on_delete=models.CASCADE)
+    category_id = models.ForeignKey(Category,related_name='product', on_delete=models.CASCADE)
     product_price = models.DecimalField(max_digits=12, decimal_places=2)
     def __str__(self):
-        return(self.product_name)
+        return(self.product_name + ' ' + self.product_description)
 
 class PurchaseOrder(models.Model):
     supplier_id = models.ForeignKey(Supplier, on_delete=models.CASCADE)
