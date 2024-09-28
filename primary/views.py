@@ -54,9 +54,10 @@ def RegistrationView(request):
 class CategoryTestView(viewsets.ModelViewSet):
     queryset = Category.objects.all()
     serializer_class = CategorySerializer
+
     def retrieve(self, request, *args, **kwargs):
         instance = self.get_object()
-        products = instance.product_category.all()
+        products = instance.products.all()
         category_data = self.get_serializer(instance, context = {'request':request}).data
         products_data = ProductSerializer(products, many=True, context={'request': request}).data
 
@@ -65,7 +66,7 @@ class CategoryTestView(viewsets.ModelViewSet):
             'products': products_data
         })
 
-class ProductTestView(viewsets.ModelViewSet):
+class ProdTestView(viewsets.ModelViewSet):
     queryset = Product.objects.all()
     serializer_class = ProductSerializer
 

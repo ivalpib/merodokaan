@@ -2,19 +2,38 @@ from rest_framework import serializers
 from primary.models import Category, Product
 
 
+        
 class ProductSerializer(serializers.HyperlinkedModelSerializer):
-    # category_id = CategorySerializer()
-    # category_id = serializers.StringRelatedField(read_only=True)
-    # category = serializers.PrimaryKeyRelatedField(queryset=Category.objects.all(), source='category_id')
+    
+# Foreign Key Relationship:
+# In a one-to-many relationship, the table that contains the foreign key 
+# (the "many" side) often uses related_name to specify how the related
+#  objects can be accessed from the "one" side.
+
+# Primary Key (Foreign Key):
+# The table that has the primary key (the "one" side) does not need a 
+# related_name because it can be referenced directly using the foreign
+# key field name with _id appended (e.g., category_id).
+
+    # No need for many=True because a product has one category instance
+
+# category_id = CategorySerializer()
+    # category_id = serializers.StringRelatedField()
+    category = serializers.PrimaryKeyRelatedField(queryset=Category.objects.all(), source='category_id')
+    # category = CategorySerializer(read_only=True,source ='category_id')
     class Meta:
         model = Product
         # fields = '__all__'
-        # fields = ['product_name','category_id', 'sku']
-        fields = ['url','id','sku','product_name','product_description','product_price']
+        # fields = ['product_name','category', 'sku']
+        fields = ['id','sku','product_name','product_description','product_price','category']
+
 
 class CategorySerializer(serializers.HyperlinkedModelSerializer):
-    product= ProductSerializer(many = True, read_only = True)
-   
+    #use source = '' if you want variable name to be different than related_name
+    # else won't need to use source = '' if used same related_name as a variable name
+    # need to add many=True if there is multiple instances
+    products = serializers.HyperlinkedRelatedField(queryset = Product.objects.select_related('category_id'), many = True, view_name='product-detail') 
+    # product = ProductSerializer(many=True)
     # product_category = serializers.SlugRelatedField(
     #     many=True,
     #     read_only=True,
@@ -22,10 +41,6 @@ class CategorySerializer(serializers.HyperlinkedModelSerializer):
     #  )
     class Meta:
         model = Category
-        fields = ['category_name','product']
-        # fields ='__all__'
-
-
-
-
+        fields = ['url','category_name','products']
+        # fields = '__all__'
     

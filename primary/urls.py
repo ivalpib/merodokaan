@@ -1,10 +1,10 @@
 from django.urls import path, include
 from . import views
 from rest_framework.routers import DefaultRouter
-from .views import ProductTestView, CategoryTestView
+from .views import ProdTestView, CategoryTestView
 
 router = DefaultRouter()
-router.register(r'products', ProductTestView)
+router.register(r'anything', ProdTestView)
 router.register(r'test', CategoryTestView)
 urlpatterns = [
     # path('', views.HomeView, name = 'index'),
