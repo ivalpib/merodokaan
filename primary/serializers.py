@@ -20,12 +20,13 @@ class ProductSerializer(serializers.HyperlinkedModelSerializer):
 # category_id = CategorySerializer()
     # category_id = serializers.StringRelatedField()
     category = serializers.PrimaryKeyRelatedField(queryset=Category.objects.all(), source='category_id')
+    test = serializers.HyperlinkedIdentityField(view_name = "product-detail")
     # category = CategorySerializer(read_only=True,source ='category_id')
     class Meta:
         model = Product
         # fields = '__all__'
         # fields = ['product_name','category', 'sku']
-        fields = ['id','sku','product_name','product_description','product_price','category']
+        fields = ['id','sku','product_name','product_description','product_price','category','test']
 
 
 class CategorySerializer(serializers.HyperlinkedModelSerializer):
