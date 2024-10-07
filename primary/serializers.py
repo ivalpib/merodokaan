@@ -32,7 +32,13 @@ class CategorySerializer(serializers.HyperlinkedModelSerializer):
     #use source = '' if you want variable name to be different than related_name
     # else won't need to use source = '' if used same related_name as a variable name
     # need to add many=True if there is multiple instances
-    products = serializers.HyperlinkedRelatedField(queryset = Product.objects.select_related('category_id'), many = True, view_name='product-detail') 
+    # products = serializers.HyperlinkedRelatedField(queryset = Product.objects.select_related('category_id'), many = True, view_name='product-detail') 
+    product = serializers.SlugRelatedField(
+        many=True,
+        read_only=True,
+        slug_field='product_description',
+        source="products"
+     )
     # product = ProductSerializer(many=True)
     # product_category = serializers.SlugRelatedField(
     #     many=True,
@@ -41,6 +47,6 @@ class CategorySerializer(serializers.HyperlinkedModelSerializer):
     #  )
     class Meta:
         model = Category
-        fields = ['url','category_name','products']
+        fields = ['url','category_name','product']
         # fields = '__all__'
     

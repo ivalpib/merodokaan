@@ -51,7 +51,7 @@ def RegistrationView(request):
     
     return render(request,'registration.html', {'form':form})
 
-class CategoryTestView(viewsets.ModelViewSet):
+class CategoryView(viewsets.ModelViewSet):
     queryset = Category.objects.all()
     serializer_class = CategorySerializer
 
@@ -66,7 +66,7 @@ class CategoryTestView(viewsets.ModelViewSet):
             'products': products_data
         })
 
-class ProdTestView(viewsets.ModelViewSet):
+class ProductView(viewsets.ModelViewSet):
     queryset = Product.objects.all()
     serializer_class = ProductSerializer
 
