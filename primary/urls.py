@@ -12,4 +12,6 @@ urlpatterns = [
     path('register', views.RegistrationView, name='register'),
     # path('test/', ProductView.as_view({'get': 'list', 'post': 'create'}), name='product-test'),
     # path('', include(router.urls)), # using + router.urls does the same thing
+    path('functionapi', views.testView , name="function-based"),
+    path('functionapi/<int:pk>', views.testView , name="function-based-pk"),
 ] + router.urls

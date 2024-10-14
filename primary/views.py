@@ -1,14 +1,14 @@
-from urllib import response
-from django.http import HttpResponse
-from django.shortcuts import render, redirect
+from django.shortcuts import render, redirect, HttpResponse
 from django.contrib.auth import authenticate, login, logout 
 from primary.form import UserRegistrationForm
 from django.contrib import messages
-
+from django.http import JsonResponse
 from rest_framework import viewsets
 from .models import Product, Category
 from .serializers import ProductSerializer, CategorySerializer
 from rest_framework.response import Response
+from rest_framework import generics
+from rest_framework.decorators import api_view
 
 # Create your views here.
 def HomeView(request):
@@ -69,6 +69,33 @@ class CategoryView(viewsets.ModelViewSet):
 class ProductView(viewsets.ModelViewSet):
     queryset = Product.objects.all()
     serializer_class = ProductSerializer
-    
 
+#function based views
+@api_view(['GET','POST','PUT','PATCH','DELETE'])
+def testView(request, pk=None):
+    if request.method == "GET":
+        product = Product.objects.all()
+        serializer = ProductSerializer(product, many = True, context = {'request': request})
+        return JsonResponse(serializer.data, safe=False)
+
+    elif request.method == 'POST':
+        #require context if there is HyperLinked required
+        serializer = ProductSerializer(data=request.data, context={'request':request}) 
+        if serializer.is_valid():
+            product = serializer.save() 
+            return JsonResponse(serializer.data)
+    elif request.method in ['PUT','PATCH']:
+        product = Product.objects.get(id=pk)
+        serializer = ProductSerializer(product, data = request.data, partial= True, context = {'request': request})
+        if serializer.is_valid():
+            updated_product = serializer.save()
+            return JsonResponse(ProductSerializer(updated_product, context={'request': request}).data)
+    elif request.method == 'DELETE':
+        product = Product.objects.get(id=pk)
+        product.delete()
+        return JsonResponse({"message":"Chosen Product has been deleted successfully."}, status=204)
+    else:
+        return HttpResponse(status=405) 
+
+    # 
 
