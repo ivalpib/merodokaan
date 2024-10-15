@@ -9,6 +9,7 @@ from .serializers import ProductSerializer, CategorySerializer
 from rest_framework.response import Response
 from rest_framework import generics
 from rest_framework.decorators import api_view
+from django.views import View
 
 # Create your views here.
 def HomeView(request):
@@ -86,6 +87,10 @@ def testView(request, pk=None):
             return JsonResponse(serializer.data)
     elif request.method in ['PUT','PATCH']:
         product = Product.objects.get(id=pk)
+        '''if all fields are required and you are sending data for selected fields only,
+            you are required to set attribute (partial=True) which will update only those
+            fields for which data has been sent.
+        '''
         serializer = ProductSerializer(product, data = request.data, partial= True, context = {'request': request})
         if serializer.is_valid():
             updated_product = serializer.save()
@@ -97,5 +102,9 @@ def testView(request, pk=None):
     else:
         return HttpResponse(status=405) 
 
-    # 
+class testClassView(View):
+    def get(self, request):
+        products = Product.objects.all()
+        serializer = ProductSerializer(products, many = True, context={'request': request})
+        return JsonResponse(serializer.data, safe=False)
 
