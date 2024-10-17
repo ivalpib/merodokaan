@@ -71,7 +71,7 @@ class ProductView(viewsets.ModelViewSet):
     queryset = Product.objects.all()
     serializer_class = ProductSerializer
 
-#function based views
+#function based views django
 @api_view(['GET','POST','PUT','PATCH','DELETE'])
 def testView(request, pk=None):
     if request.method == "GET":
@@ -102,6 +102,7 @@ def testView(request, pk=None):
     else:
         return HttpResponse(status=405) 
 
+# class based views django
 class testClassView(View):
     def get(self, request):
         products = Product.objects.all()
