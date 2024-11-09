@@ -10,6 +10,7 @@ from rest_framework.response import Response
 from rest_framework import generics
 from rest_framework.decorators import api_view
 from django.views import View
+from rest_framework.renderers import JSONRenderer
 
 # Create your views here.
 def HomeView(request):
@@ -75,9 +76,14 @@ class ProductView(viewsets.ModelViewSet):
 @api_view(['GET','POST','PUT','PATCH','DELETE'])
 def testView(request, pk=None):
     if request.method == "GET":
-        product = Product.objects.all()
-        serializer = ProductSerializer(product, many = True, context = {'request': request})
-        return JsonResponse(serializer.data, safe=False)
+        if pk == None:
+            product = Product.objects.all()
+            serializer = ProductSerializer(product, many = True, context = {'request': request})
+            return JsonResponse(serializer.data, safe=False)
+        else:
+            product = Product.objects.get(pk=pk)
+            serializer = ProductSerializer(product, context = {'request': request})
+            return JsonResponse(serializer.data)
 
     elif request.method == 'POST':
         #require context if there is HyperLinked required
@@ -107,5 +113,12 @@ class testClassView(View):
     def get(self, request):
         products = Product.objects.all()
         serializer = ProductSerializer(products, many = True, context={'request': request})
-        return JsonResponse(serializer.data, safe=False)
+        print(serializer)
+        print('11111111111')
+        print(serializer.data)
+        print('11111111111')
+        json_data = JSONRenderer().render(serializer.data)
+        print(json_data)
+        return HttpResponse(json_data, content_type = 'application/json')
+        # return JsonResponse(serializer.data, safe=False)
 
