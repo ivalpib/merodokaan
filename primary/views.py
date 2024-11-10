@@ -11,7 +11,8 @@ from rest_framework import generics
 from rest_framework.decorators import api_view
 from django.views import View
 from rest_framework.renderers import JSONRenderer
-
+import io
+from rest_framework.parsers import JSONParser
 # Create your views here.
 def HomeView(request):
     return render(request,'index.html')
@@ -79,18 +80,22 @@ def testView(request, pk=None):
         if pk == None:
             product = Product.objects.all()
             serializer = ProductSerializer(product, many = True, context = {'request': request})
-            return JsonResponse(serializer.data, safe=False)
+            return Response(serializer.data, safe=False)
         else:
             product = Product.objects.get(pk=pk)
             serializer = ProductSerializer(product, context = {'request': request})
-            return JsonResponse(serializer.data)
+            return Response(serializer.data)
 
     elif request.method == 'POST':
         #require context if there is HyperLinked required
+        json_data = request.body
+        stream = io.BytesIO(json_data)
+        python_data = JS
+
         serializer = ProductSerializer(data=request.data, context={'request':request}) 
         if serializer.is_valid():
             product = serializer.save() 
-            return JsonResponse(serializer.data)
+            return Response(serializer.data)
     elif request.method in ['PUT','PATCH']:
         product = Product.objects.get(id=pk)
         '''if all fields are required and you are sending data for selected fields only,
@@ -100,11 +105,11 @@ def testView(request, pk=None):
         serializer = ProductSerializer(product, data = request.data, partial= True, context = {'request': request})
         if serializer.is_valid():
             updated_product = serializer.save()
-            return JsonResponse(ProductSerializer(updated_product, context={'request': request}).data)
+            return Response(ProductSerializer(updated_product, context={'request': request}).data)
     elif request.method == 'DELETE':
         product = Product.objects.get(id=pk)
         product.delete()
-        return JsonResponse({"message":"Chosen Product has been deleted successfully."}, status=204)
+        return Response({"message":"Chosen Product has been deleted successfully."}, status=204)
     else:
         return HttpResponse(status=405) 
 
